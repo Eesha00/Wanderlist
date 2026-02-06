@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+  // This matches the folder structure in your screenshot
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- Auth.js Models (Standard for Postgres adapters) ---
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String          @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  accounts      Account[]
+  sessions      Session[]
+  
+  // Relation to the core feature
+  bucketList    BucketListItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@id([identifier, token])
+}
+
+// --- Wanderlist Core Models ---
+
+ // ... User model remains the same
+
+model BucketListItem {
+  id          String   @id @default(cuid())
+  title       String
+  country     String?
+  notes       String?  // New: Personal notes
+  category    String   @default("DREAM") // New: DREAM, PLANNED, COMPLETED
+  isCompleted Boolean  @default(false)
+  completedAt DateTime?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
+enum Category {
+  DREAM     // "One day..."
+  PLANNED   // "Booked/Scheduled"
+  NATURE
+  CITY
+  FOOD 
+  CULTURAL
+}

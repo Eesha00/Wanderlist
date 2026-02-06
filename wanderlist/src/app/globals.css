@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* We define the "Earth & Explorer" palette here as standard variables */
+  --background: #F9F8F4;
+  --forest: #1A3C34;
+  --clay: #C46D5E;
+  --sand: #E3E0D8;
+  --gold: #C8A97E;
+}
+
+/* Base Styles */
+body {
+  background-color: var(--background);
+  color: var(--forest);
+  /* Apply font smoothing for that premium feel */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility Classes for Glassmorphism */
+@layer utilities {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+  
+  .input-underline {
+    width: 100%;
+    background-color: transparent;
+    border-bottom: 1px solid var(--sand);
+    padding-top: 0.75rem; /* 3 in tailwind */
+    padding-bottom: 0.75rem;
+    color: var(--forest);
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  .input-underline:focus {
+    border-color: var(--forest);
+  }
+}
